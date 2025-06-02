@@ -1,0 +1,12 @@
+.page2-container {
+  height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #7e83dd;
+  color: #333;
+  text-align: center;
+  width:1546px; 
+}

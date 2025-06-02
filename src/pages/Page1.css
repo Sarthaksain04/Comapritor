@@ -1,0 +1,57 @@
+
+ .page1-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;  /* align items to the top */
+  align-items: flex-start;      /* align items to the left */
+  background-color: #5459AC; 
+  color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+  padding: 100px 120px;
+  text-align: left;      
+  width: 1306px;       /* ensure left alignment */
+
+}
+
+
+
+.intro-line {
+  font-size: 46px;
+  font-weight: 500;
+  margin-bottom: 30px;
+  margin-top: 10px;
+}
+
+.brand {
+  font-family: 'Brush Script MT', cursive;
+  font-weight: bold;
+  font-size: 58px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.main-text {
+  font-size: 47px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-bottom: 30px;
+  max-width: 900px;
+  margin-top: -20px;
+  
+}
+
+.get-started {
+  font-size: 28px;
+  font-weight: 370;
+  color: #ffffff;
+  margin-top: 3px;
+}
+
+.cart-image{
+   max-width: 38%;
+  height: auto;
+  margin-left: 930px;
+  margin-top: -579px;
+
+}
