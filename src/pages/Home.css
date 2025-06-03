@@ -3,6 +3,7 @@ html, body, #root {
   height: 100%;
   margin: 0;
   padding: 0;
+  
 }
 
 /* Scroll Container */
@@ -87,6 +88,7 @@ section {
   font-weight: 500;
   margin-top: 21rem;
   height: 9px;
+  z-index: 5;
 }
 
 
@@ -386,9 +388,9 @@ section {
 .promo-image8 {
   max-width: 5%;
   height: auto;
-  margin-left: 40vw;
-  margin-top: 65vh;
+  margin-left: 42vw;
+  margin-top: 45vh;
   position: fixed;
-  z-index: 1;
+  z-index: -1;
   animation: float-left 2.8s ease-in-out infinite;
 }
