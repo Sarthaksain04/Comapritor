@@ -1,34 +1,204 @@
-import React, { Suspense, useEffect, useRef } from "react";
+// import React, { Suspense, useEffect, useRef } from "react";
+// import { Canvas, useThree } from "@react-three/fiber";
+// import { OrbitControls, useGLTF } from "@react-three/drei";
+// import { useNavigate } from "react-router-dom";
+
+// // Model Loader
+// function BlenderModel() {
+//   const { scene } = useGLTF("models/HeadQuarter.glb");
+//   const navigate = useNavigate();
+
+// return (
+//     <primitive
+//       object={scene}
+//       scale={1.5}
+//       onClick={(e: any) => {
+//         e.stopPropagation();
+
+//         let obj = e.object;
+
+//         // 🔥 Traverse UP to find parent group
+//         while (obj.parent) {
+//           if (obj.name === "Sarthak") {
+//             console.log("Character clicked");
+//             navigate("/contacts"); // 👉 change route
+//             return;
+//           }
+//           obj = obj.parent;
+//         }
+//       }}
+//     />
+//   );
+// }
+
+// // Camera Setup (FINAL)
+// function CameraSetup() {
+//   const { camera } = useThree();
+//   const controlsRef = useRef<any>();
+
+//   useEffect(() => {
+//     // ✅ Set camera position
+//     camera.position.set(
+//       0.7188237271613225,
+//       4.916100078590665,
+//       7.914598656265961
+//     );
+
+//     // ✅ Set where camera looks
+//     if (controlsRef.current) {
+//       controlsRef.current.target.set(
+//         -1.0994293258181982,
+//         3.6788000213135597,
+//         0.04722225475218038
+//       );
+
+//       controlsRef.current.update();
+//     }
+//   }, [camera]);
+
+//   return (
+//     <OrbitControls
+//       ref={controlsRef}
+//       enableZoom={false}   // you can change this
+//       enablePan={false}
+//       enableRotate={false}
+//     />
+//   );
+// }
+
+// // Main Component
+// export default function ContactHeadquarter() {
+//   return (
+//     <div style={{ width: "100%", height: "100vh" }}>
+//       <Canvas camera={{ fov: 50 }}>
+        
+//         {/* Lights */}
+//         <ambientLight intensity={2} />
+//         <directionalLight position={[185, 653, -85]} />
+
+//         {/* Model */}
+//         <Suspense fallback={null}>
+//           <BlenderModel />
+//         </Suspense>
+
+//         {/* Camera */}
+//         <CameraSetup />
+//       </Canvas>
+//     </div>
+//   );
+// }
+
+
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas, useThree } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
+import { OrbitControls, useGLTF, Html, Billboard } from "@react-three/drei";
+import { useNavigate } from "react-router-dom";
+import * as THREE from "three";
+import { Environment } from "@react-three/drei";
+
+// cube.005
 
 // Model Loader
 function BlenderModel() {
   const { scene } = useGLTF("models/HeadQuarter.glb");
-  return <primitive object={scene} scale={1.5} />;
+  const navigate = useNavigate();
+  const [headPos, setHeadPos] = useState<THREE.Vector3 | null>(null);
+
+  useEffect(() => {
+    scene.traverse((child: any) => {
+      if (child.name === "Head") {
+        const pos = new THREE.Vector3();
+        child.getWorldPosition(pos);
+        pos.y += 0.8; // 👈 adjust height
+        setHeadPos(pos);
+        
+      }
+    });
+  }, [scene]);
+
+  return (
+    <>
+      {/* Model */}
+      <primitive
+        object={scene}
+        scale={1.5}
+        onClick={(e: any) => {
+          e.stopPropagation();
+
+          let obj = e.object;
+          while (obj.parent) {
+            if (obj.name === "Sarthak") {
+              navigate("/contacts");
+              return;
+            }
+            obj = obj.parent;
+          }
+        }}
+      />
+
+      {/* 💬 Speech Bubble */}
+      {headPos && (
+        <Billboard position={[headPos.x, headPos.y, headPos.z]}>
+          <Html center>
+            <div style={{ position: "relative", textAlign: "center" }}>
+              
+              {/* Bubble */}
+              <div
+                style={{
+                  background: "#fff",
+                  color: "#000",
+                  padding: "12px 20px",
+                  borderRadius: "30px",
+                  fontWeight: "600",
+                  fontSize: "16px",
+                  boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+                  whiteSpace: "nowrap",
+                  marginTop: "-130px",
+                }}
+              >
+                Hey, Click me 👇
+              </div>
+
+              {/* Triangle Pointer */}
+              <div
+                style={{
+                  position: "absolute",
+                  bottom: "-10px",
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  width: 0,
+                  height: 0,
+                  borderLeft: "10px solid transparent",
+                  borderRight: "10px solid transparent",
+                  borderTop: "10px solid #fff",
+                }}
+              />
+            </div>
+          </Html>
+        </Billboard>
+      )}
+    </>
+  );
 }
 
-// Camera Setup (FINAL)
+// Camera Setup
 function CameraSetup() {
   const { camera } = useThree();
   const controlsRef = useRef<any>();
 
   useEffect(() => {
-    // ✅ Set camera position
     camera.position.set(
       0.7188237271613225,
       4.916100078590665,
       7.914598656265961
     );
 
-    // ✅ Set where camera looks
     if (controlsRef.current) {
       controlsRef.current.target.set(
         -1.0994293258181982,
         3.6788000213135597,
         0.04722225475218038
       );
-
       controlsRef.current.update();
     }
   }, [camera]);
@@ -36,7 +206,7 @@ function CameraSetup() {
   return (
     <OrbitControls
       ref={controlsRef}
-      enableZoom={false}   // you can change this
+      enableZoom={false}
       enablePan={false}
       enableRotate={false}
     />
@@ -47,11 +217,15 @@ function CameraSetup() {
 export default function ContactHeadquarter() {
   return (
     <div style={{ width: "100%", height: "100vh" }}>
-      <Canvas camera={{ fov: 50 }}>
+      <Canvas camera={{ fov: 50 }}
+> 
+
+         {/* <Environment preset="city" /> */}
+
         
         {/* Lights */}
         <ambientLight intensity={2} />
-        <directionalLight position={[5, 23, 5]} />
+        <directionalLight position={[985, 1953, -105]} intensity={3} />
 
         {/* Model */}
         <Suspense fallback={null}>

@@ -6,13 +6,12 @@
   justify-content: center;
   align-items: center;
   gap: 60px;
-  background-color: #5d8de0;
 }
 
 /* Medium-sized card container */
 .spline-card {
-  width: 400px;
-  height: 600px;
+  width: 100%;
+  height:120%;
   border-radius: 20px;
   position: relative;
   overflow: hidden;
@@ -22,9 +21,9 @@
 }
 
 /* Hover scale */
-.spline-card:hover {
+/* .spline-card:hover {
   transform: scale(1.35);
-}
+} */
 
 /* Spline model */
 .static-spline {
@@ -36,8 +35,8 @@
 /* Speech bubble */
 .speech-bubble {
   position: absolute;
-  top: 160px;
-  left: 50%;
+  top: 290px;
+  left: 48%;
   transform: translateX(-50%);
   background: white;
   color: #000;
@@ -66,3 +65,6 @@
   0% { opacity: 0; transform: translate(-50%, -5px) scale(0.8); }
   100% { opacity: 1; transform: translate(-50%, 0px) scale(1); }
 }
+
+
+
