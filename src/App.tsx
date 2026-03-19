@@ -29,6 +29,7 @@ import AboutUs from "./pages/AboutUs";
 import { Toaster } from "react-hot-toast";
 import AboutUs3Denv from "./pages/AboutUs3Denv";
 import AnimatedCard from "./pages/AnimatedCard";
+import ContactHeadquarter from "./pages/ContactHeadquarter";
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -63,6 +64,7 @@ function App() {
       <Route path="/aboutus" element={<AboutUs />} />
       <Route path="/aboutus3Denv" element={<AboutUs3Denv />} />
       <Route path="/animatedcard" element={<AnimatedCard />} />
+      <Route path="/contactheadquarter" element={<ContactHeadquarter />} />
     </Routes>
       )}
     </>
