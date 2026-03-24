@@ -32,7 +32,7 @@ def scrape_google_shopping(query: str, country="in", language="en") -> List[dict
             "rating": item.get("rating"),
             "reviews": item.get("reviews"),
             "source": item.get("source"),
-            "link": item.get("link"),
+            "link": item.get("buy_link") or item.get("product_link") or item.get("link"),
             "thumbnail": item.get("thumbnail"),
         })
 

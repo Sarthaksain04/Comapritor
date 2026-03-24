@@ -410,7 +410,7 @@ export default function AboutUs() {
   <ConnectPage />
 </div>
 
- <AnimatedCard />
+ {/* <AnimatedCard /> */}
 
 
 {/* <div className="cards">

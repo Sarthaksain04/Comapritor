@@ -1,4 +1,4 @@
-import  { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { CustomEase } from "gsap/CustomEase";
 
@@ -115,15 +115,9 @@ export function Component() {
         
         // Updated Selector: .menu-button -> .nav-close-btn
         const menuButton = containerRef.current!.querySelector(".nav-close-btn");
-        const menuButtonTexts = menuButton
-        ? menuButton.querySelectorAll<HTMLParagraphElement>("p")
-        : [];
-
+        const menuButtonTexts = menuButton?.querySelectorAll("p");
         // Updated Selector: .menu-button-icon -> .menu-button-icon (unchanged in CSS/JSX?) No, wait, CSS had .menu-button-icon
-        const menuButtonIcon = menuButton
-  ? menuButton.querySelector<HTMLElement>(".menu-button-icon")
-  : null;
-
+        const menuButtonIcon = menuButton?.querySelector(".menu-button-icon");
 
         const tl = gsap.timeline();
         

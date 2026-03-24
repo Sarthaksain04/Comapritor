@@ -92,27 +92,91 @@
    ----------------------- */
 
 .right-big-1 {
-  top: 110px;
-  right: 120px;
+  top: 128px;
+  right: 136px;
   animation-duration: 6.1s;
   animation-delay: 0.48s;
 }
 .right-big-2 {
-  top: 500px;
-  right: 110px;
+  top: 540px;
+  right: 20px;
   animation-duration: 6.8s;
   animation-delay: 1.18s;
 }
 
+
 /* RIGHT SMALL SQUARES */
-.right-sq-1 { top: 72px;  right: 36px;  animation-duration: 5.6s; animation-delay: 0.18s; }
-.right-sq-2 { top: 230px; right: 210px; animation-duration: 6.5s; animation-delay: 1.02s; width:78px; height:78px; border-radius:18px; }
-.right-sq-3 { top: 320px; right: 130px; animation-duration: 5.8s; animation-delay: 0.42s; }
-.right-sq-4 { top: 410px; right: 250px; animation-duration: 7.0s; animation-delay: 1.25s; }
-.right-sq-5 { top: 488px; right: 150px; animation-duration: 6.0s; animation-delay: 0.76s; }
-.right-sq-6 { top: 620px; right: 240px; animation-duration: 7.3s; animation-delay: 1.6s; }
-.right-sq-7 { top: 140px; right: 300px; animation-duration: 5.1s; animation-delay: 0.05s; width:48px; height:48px; border-radius:12px; }
-.right-sq-8 { top: 350px; right: 330px; animation-duration: 6.2s; animation-delay: 1.12s; }
+.right-sq-1 { 
+  width:95px; 
+  height:95px;  
+  margin-top: 110px;         
+  right: 26px;  
+  animation-duration: 5.6s; 
+  animation-delay: 0.18s; 
+}
+.right-sq-2 { 
+  top: 230px; 
+  right: 30px;  
+  animation-duration: 6.5s; 
+  animation-delay: 1.02s; 
+  width:64px; 
+  height:64px; 
+  border-radius:18px; 
+}
+
+.right-sq-3 { 
+  width:42px; 
+  height:42px;  
+  top: 320px;         
+  right: 230px; 
+  animation-duration: 5.8s; 
+  animation-delay: 0.42s;   
+  border-radius: 12px;
+  background: #10243d;
+}
+
+
+.right-sq-4 { 
+  top: 370px; 
+  right: 150px; 
+  animation-duration: 7.0s; 
+  animation-delay: 1.25s;   
+  border-radius: 12px;
+
+}
+
+.right-sq-5 { 
+  top: 450px; 
+  right: 40px; 
+  animation-duration: 6.0s; 
+  animation-delay: 0.76s;   
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+
+}
+.right-sq-6 { 
+  top: 510px; 
+  right: 320px; 
+  animation-duration: 7.3s; 
+  animation-delay: 1.6s; 
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+
+}
+
+.right-sq-8 { 
+  top: 450px; 
+  right: 230px; 
+  animation-duration: 6.2s; 
+  animation-delay: 1.12s; 
+  width: 49px;
+  height: 49px;
+  border-radius: 12px;
+
+}
+
 
 .left-big-1 {
   top: 128px;
@@ -185,8 +249,7 @@ left: 126px;
   height: 64px;
 }
 
-.right-sq-3 { background: #10243d; }
-.right-sq-7 { background: #e9eef3; box-shadow: 0 8px 18px rgba(0,0,0,0.25); }
+
 
 /* ---------- FLOAT ANIMATION KEYFRAME ---------- */
 @keyframes floatY {

@@ -597,7 +597,7 @@ const trend = avgPrice
 
               <button
                 className="icon-btn"
-                onClick={() => window.open(item.link, "_blank")}
+                onClick={() => window.open(item.link)}
               >
                 <ExternalLink size={18} />
               </button>

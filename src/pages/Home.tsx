@@ -508,6 +508,8 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 import Lenis from "@studio-freight/lenis";
 import ContactPage from "./ContactPage";
+import Reels from "../assets/Reels.png";
+import { Component } from "@/Components/sterling-gate-kinetic-navigation";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -658,7 +660,7 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
 
       {/* BACKGROUND FLOATING LAYER (behind hero) */}
       <div className="float-wrapper" aria-hidden>
-        
+      
 
         {/* LEFT CLUSTER (9 divs: 2 big + 7 small) */}
         <div className="big-card left-big-1 card-filled"> 
@@ -678,7 +680,23 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
             }}
           />
         </div>
-        <div className="big-card left-big-2"></div>
+        <div className="big-card left-big-2">
+            <img
+            src={Reels}
+            alt="Reels Promotional"
+            style={{
+              width: "85%",
+              height: "auto",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 2,
+              pointerEvents: "none",   // prevents click issues on PNG
+              userSelect: "none"       // prevents drag selection
+            }}
+          />
+        </div>
 
         {/* <div className="sq left-sq-1"></div> */}
         <div className="sq left-sq-1">
@@ -802,7 +820,15 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
         <div className="sq right-sq-7"></div>
         <div className="sq right-sq-8"></div>
 
+               
+
+
       </div>
+
+
+
+
+
 
       {/* FOREGROUND HERO (centered, above floats) */}
       <main className="hero-content" role="main" aria-label="Hero section">
@@ -827,7 +853,6 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
   Start Exploring
 </button>
       </main>
-      
     </div>
   <div className="svg-path">
         <svg width="896" height="999" viewBox="0 0 898 999" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -872,6 +897,7 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
         </defs>
         </svg>
       </div> */}
+       
       </section>
      
       
