@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect , useRef } from "react";
 import Spline from "@splinetool/react-spline";
 import "./Contacts.css";
 
@@ -7,12 +7,44 @@ function Contacts() {
   // Card 1 (rotating messages)
   const [showMsg1, setShowMsg1] = useState(false);
   const [msgIndex, setMsgIndex] = useState(0);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+
 
   const messages1 = [
     "I am one of its developers 💻",
     "Hey, I am Sarthak 👋",
 
   ];
+
+ useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume =1; // 🔥 smooth background sound
+      audioRef.current.loop = true;  // 🔥 LOOP ENABLED
+
+      const playPromise = audioRef.current.play();
+
+      if (playPromise !== undefined) {
+        playPromise.catch(() => {
+          console.log("Autoplay blocked → waiting for click");
+        });
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const unlockAudio = () => {
+      if (audioRef.current) {
+        audioRef.current.play();
+      }
+      window.removeEventListener("click", unlockAudio);
+    };
+
+    window.addEventListener("click", unlockAudio);
+
+    return () => {
+      window.removeEventListener("click", unlockAudio);
+    };
+  }, []);
 
   useEffect(() => {
     if (!showMsg1) return;
@@ -28,6 +60,13 @@ function Contacts() {
 
   return (
     <div className="page-center">
+
+
+       <audio
+        ref={audioRef}
+        src="src/assets/Hi Sound.ogg"
+        preload="auto"
+      />
 
       {/* CARD 1 */}
       <div
