@@ -224,21 +224,25 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
+import ConnectPage from "@/models/connectors";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import { useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import "./AboutUs.css";
 import AboutUs3Denv from "./AboutUs3Denv";
-import ConnectPage from "@/models/connectors";
-import AnimatedCard from "./AnimatedCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function AboutUs() {
+  const navigate = useNavigate();
   const container = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
   const track = useRef<HTMLDivElement>(null);
   const wrapper = useRef<HTMLDivElement>(null);
   const verticalSection = useRef<HTMLDivElement>(null);
+  const progressFillRef = useRef<HTMLDivElement | null>(null);
+  
 
   useEffect(() => {
     /* HERO TITLE */
@@ -296,6 +300,67 @@ export default function AboutUs() {
 
     return () => ScrollTrigger.killAll();
   }, []);
+
+
+  useEffect(() => {
+    const section = document.querySelector(".projects-section");
+    if (!section || !progressFillRef.current) return;
+  
+    const duration = 3000; // ⏱ 10 seconds total
+    let startTime: number | null = null;
+    let elapsed = 0;
+    let rafId: number | null = null;
+    let isVisible = false;
+  
+    function animate(now: number) {
+      if (!startTime) startTime = now;
+  
+      const delta = now - startTime;
+      const progress = Math.min((elapsed + delta) / duration, 1);
+  
+      if (progressFillRef.current) {
+        progressFillRef.current.style.transform = `scaleX(${progress})`;
+        progressFillRef.current.style.transformOrigin = "left center";
+      }
+  
+      if (progress < 1 && isVisible) {
+        rafId = requestAnimationFrame(animate);
+      } else if (progress >= 1) {
+        navigate("/feedback");
+      }
+    }
+  
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          // ▶️ RESUME
+          isVisible = true;
+          startTime = null;
+          rafId = requestAnimationFrame(animate);
+        } else {
+          // ⏸ PAUSE
+          isVisible = false;
+          if (startTime) {
+            elapsed += performance.now() - startTime;
+            startTime = null;
+          }
+          if (rafId) {
+            cancelAnimationFrame(rafId);
+            rafId = null;
+          }
+        }
+      },
+      { threshold: 0.6 }
+    );
+  
+    observer.observe(section);
+  
+    return () => {
+      observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [navigate]);
+  
 
   return (
     <div
@@ -426,7 +491,29 @@ export default function AboutUs() {
     ))}
 </div> */}
 </section>
+  <section className="projects-section">
+        {/* 🔥 PROGRESS BAR (RIGHT, HORIZONTAL) */}
+        <div className="progress-track-horizontal">
+          <div ref={progressFillRef} className="progress-fill-horizontal" />
+        </div>
 
+
+        <p className="scroll-hint">
+          KEEP SCROLLING<br />TO LEARN MORE
+        </p>
+
+        <h2 className="projects-title">FEEDBACK</h2>
+
+        <div className="projects-row">
+          <span>+</span><span>+</span><span>+</span><span>+</span><span>+</span>
+        </div>
+
+        {/* <div className="next-page">
+          <span className="next-text">NEXT PAGE</span>
+          <div className="line"></div>
+          <span className="arrow">→</span>
+        </div> */}
+      </section>
 
 
       </div>

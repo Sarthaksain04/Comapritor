@@ -7,7 +7,7 @@ import Button from './pages/Button';
 
 import CartPage from './pages/CartPage';
 import Compared from './pages/Compared';
-import Contacts from './pages/Contacts';
+import Contacts from './pages/Sarthak';
 import Dashboard from './pages/Dashboard';
 import Explorepage from './pages/Explorepage';
 import Home from './pages/Home';
@@ -30,6 +30,9 @@ import { Toaster } from "react-hot-toast";
 import AboutUs3Denv from "./pages/AboutUs3Denv";
 import AnimatedCard from "./pages/AnimatedCard";
 import ContactHeadquarter from "./pages/ContactHeadquarter";
+import Feedback from "./pages/Feedback";
+import Sarthak from "./pages/Sarthak";
+import Harshita from "./pages/Harshita";
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -53,7 +56,7 @@ function App() {
       <Route path="/compared"element={<Compared/>}/>
       <Route path="/list"element={<Productlist/>}/>
       <Route path="/explore"element={<Explorepage/>}/>
-      <Route path="/contacts"element={<Contacts/>}/>
+      <Route path="/sarthak"element={<Sarthak/>}/>
       <Route path="/reels"element={<Reels/>}/>
       <Route path="/dashboard" element={<Dashboard/>}/>
       <Route path="/threeD" element={<ThreeD/>}/>
@@ -65,6 +68,8 @@ function App() {
       <Route path="/aboutus3Denv" element={<AboutUs3Denv />} />
       <Route path="/animatedcard" element={<AnimatedCard />} />
       <Route path="/contactheadquarter" element={<ContactHeadquarter />} />
+      <Route path="/feedback" element={<Feedback />} />
+      <Route path="/harshita" element={<Harshita />} />
     </Routes>
       )}
     </>

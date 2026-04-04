@@ -2,7 +2,7 @@ import React, { useState, useEffect , useRef } from "react";
 import Spline from "@splinetool/react-spline";
 import "./Contacts.css";
 
-function Contacts() {
+function Sarthak() {
 
   // Card 1 (rotating messages)
   const [showMsg1, setShowMsg1] = useState(false);
@@ -90,4 +90,4 @@ function Contacts() {
   );
 }
 
-export default Contacts;
+export default Sarthak;
