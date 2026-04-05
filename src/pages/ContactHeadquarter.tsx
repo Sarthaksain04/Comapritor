@@ -432,8 +432,45 @@ function CameraSetup() {
 
 // Main Component
 export default function ContactHeadquarter() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  useEffect(() => {
+      if (audioRef.current) {
+        audioRef.current.volume =1; // 🔥 smooth background sound
+        audioRef.current.loop = true;  // 🔥 LOOP ENABLED
+  
+        const playPromise = audioRef.current.play();
+  
+        if (playPromise !== undefined) {
+          playPromise.catch(() => {
+            console.log("Autoplay blocked → waiting for click");
+          });
+        }
+      }
+    }, []);
+  
+    useEffect(() => {
+      const unlockAudio = () => {
+        if (audioRef.current) {
+          audioRef.current.play();
+        }
+        window.removeEventListener("click", unlockAudio);
+      };
+  
+      window.addEventListener("click", unlockAudio);
+  
+      return () => {
+        window.removeEventListener("click", unlockAudio);
+      };
+    }, []);
+
+
   return (
     <div style={{ width: "100%", height: "100vh" }}>
+       <audio
+        ref={audioRef}
+        src="src/assets/stranger_things.mp3"
+        preload="auto"
+      />
       <Canvas camera={{ fov: 50 }}>
         
         {/* Lights */}
