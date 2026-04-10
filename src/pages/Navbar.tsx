@@ -47,18 +47,15 @@
 // };
 
 // export default Navbar;
+import WaveButton from "@/components/WaveButton"; // Make sure path is correct
+import { useState } from "react";
 import { FaGlobe } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import "tailwindcss";
+import introVideo from "../assets/intro.mp4"; // adjust path if needed
+import { SparklesText } from "../components/sparkles-text";
 import Button from "./Button";
 import "./Navbar.css";
-import { Link } from "react-router-dom";
-import { SparklesText } from "../Components/sparkles-text";
-import { useState } from "react";
-import introVideo from "../assets/intro.mp4"; // adjust path if needed
-import { Home, User, Briefcase, FileText } from 'lucide-react'
-import { NavBar } from "@/Components/ui/tubelight-navbar"
-import Reels from "./Reels";
-import WaveButton from "@/Components/WaveButton"; // Make sure path is correct
 
 const Navbar = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -82,7 +79,7 @@ const Navbar = () => {
 
         <div className="navbar-left">
         <Link to="#" className="nav-link">Home</Link>
-          <a href="/contactheadquarter" className="nav-link">Contacts</a>
+          <a href="/contactheadquarter" className="nav-link">Team contact </a>
           <a href="/reels" className="nav-link">Reels</a>
         </div>
 

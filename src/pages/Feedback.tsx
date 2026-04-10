@@ -1,7 +1,7 @@
 "use client";
 
-import InfiniteGallery from "../Components/3d-gallery-photography";
 import img1 from "@/assets/Sneha.png";
+import InfiniteGallery from "../components/3d-gallery-photography";
 
 
 export default function Feedback() {

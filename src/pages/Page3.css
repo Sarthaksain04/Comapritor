@@ -136,6 +136,55 @@
   margin: 0 auto;            /* Centers the box if flex direction changes */
 }
 
+/* 🔥 EXPANDED FULLSCREEN */
+.visual-container.expanded {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  border-radius: 0;
+   background-color: #ffffd6;
+}
+
+/* CANVAS FULL HEIGHT */
+.visual-container canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* CLOSE BUTTON */
+.close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10000;
+  background: rgb(0, 0, 0);
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  color: rgb(255, 255, 255);
+}
+
+/* OPTIONAL: smooth zoom feel */
+.visual-container.expanded {
+  animation: zoomIn 0.5s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 .continue-scroll-btn {
   position: absolute;
   bottom: 24px;

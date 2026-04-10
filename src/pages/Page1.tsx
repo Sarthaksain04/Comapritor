@@ -1,8 +1,7 @@
-import React from 'react';
-import './Page1.css';
-import Navbar from './Navbar';
+import { TextAnimate } from '@/components/ui/text-animate';
 import ai from '../assets/ai.png';
-import { TextAnimate } from '@/Components/ui/text-animate';
+import Navbar from './Navbar';
+import './Page1.css';
 // import { Cursor } from '@/Components/inverted-cursor';
 
 

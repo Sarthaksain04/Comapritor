@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Button } from "../Components/ui/button";
-import { Input } from "../Components/ui/input";
-import { Label } from "../Components/ui/label";
-import { Checkbox } from "../Components/ui/checkbox";
-import { Eye, EyeOff, Mail, Sparkles } from "lucide-react";
-import { cn } from "../lib/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Eye, EyeOff, Mail } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 interface PupilProps {
@@ -179,6 +180,7 @@ const EyeBall = ({
 
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -195,7 +197,21 @@ function LoginPage() {
   const blackRef = useRef<HTMLDivElement>(null);
   const yellowRef = useRef<HTMLDivElement>(null);
   const orangeRef = useRef<HTMLDivElement>(null);
+  const [isSignup, setIsSignup] = useState(false);
+  const [pin, setPin] = useState(["", "", "", ""]);
+  const pinRefs = useRef<HTMLInputElement[]>([]);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [otpRequested, setOtpRequested] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [showSendOtp, setShowSendOtp] = useState(false);
+  const [showOtpModal, setShowOtpModal] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [timer, setTimer] = useState(30);
+  const [shake, setShake] = useState(false);
 
+
+  const getOtp = () => pin.join("");
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMouseX(e.clientX);
@@ -225,6 +241,18 @@ function LoginPage() {
     const timeout = scheduleBlink();
     return () => clearTimeout(timeout);
   }, []);
+
+
+  //  Timer to resend 
+  useEffect(() => {
+  let interval: any;
+  if (otpRequested && timer > 0) {
+    interval = setInterval(() => {
+      setTimer((prev) => prev - 1);
+    }, 1000);
+  }
+  return () => clearInterval(interval);
+}, [otpRequested, timer]);
 
   // Blinking effect for black character
   useEffect(() => {
@@ -304,29 +332,116 @@ function LoginPage() {
   const yellowPos = calculatePosition(yellowRef);
   const orangePos = calculatePosition(orangeRef);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
+ const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
 
-    // Simulate API delay (quick)
-    await new Promise(resolve => setTimeout(resolve, 300));
-
-    // Mock authentication - validate against dummy credentials
-    if (email === "erik@gmail.com" && password === "1234") {
-      console.log("✅ Login successful!");
-      alert("Login successful! Welcome, Erik!");
-      // In a real app, you would:
-      // - Store auth token
-      // - Redirect to dashboard
-      // - Set user session
-    } else {
-      setError("Invalid email or password. Please try again.");
-      console.log("❌ Login failed");
+    if (isSignup) {
+    if (!name || !email || !phone || !password) {
+      alert("Fill all fields");
+      return;
     }
+  } else {
+    if (!email || !password) {
+      alert("Fill all fields");
+      return;
+    }
+  }
 
-    setIsLoading(false);
+//  if (isSignup && !otpVerified) {
+//   alert("Please verify OTP first");
+//   return;
+// }
+
+  setIsLoading(true);
+
+  try {
+      // SIGNUP
+      if (isSignup) {
+  // 🔥 OPEN OTP MODAL (STOP NORMAL FLOW)
+      setShowOtpModal(true);
+      setIsLoading(false);
+      return;
+}
+
+     else {
+      // LOGIN
+      const res = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("token", data.token);
+        alert("Login success!");
+      } else {
+        alert(data.error);
+      }
+    }
+  } catch {
+    alert("Server error");
+  }
+
+  setIsLoading(false);
+};
+
+  //  Function to send OTP - replace with real API call
+  const handleSendOtp = async () => {
+      setOtpRequested(true);
+      setTimer(30);
+
+  
+      await fetch("http://localhost:5000/api/auth/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, phone: "+91" + phone }),
+    });
+    toast.success("OTP sent to your email spam folder & phone");
+
   };
+
+const handleVerifyOtp = async () => {
+    const otp = pin.join("");
+
+  
+    const res = await fetch("http://localhost:5000/api/auth/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
+  if (!res.ok) {
+    setShake(true);
+    setTimeout(() => setShake(false), 400);
+    toast.error("Invalid OTP ❌");
+    return false;
+  }
+  
+  setOtpVerified(true);
+
+  // 🔥 NOW DO ACTUAL SIGNUP
+  await fetch("http://localhost:5000/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      name,
+      email,
+      phone: "+91" + phone,
+      password,
+    }),
+  });
+
+ setSuccess(true);
+  toast.success("Signup successful 🎉");
+
+  setTimeout(() => {
+    setShowOtpModal(false);
+    navigate("/");
+  }, 2000);
+
+  return true;
+};
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
@@ -511,7 +626,6 @@ function LoginPage() {
         </div>
 
         <div className="relative z-20 flex items-center gap-8 text-sm text-primary-foreground/60">
-         
         </div>
 
         {/* Decorative elements */}
@@ -521,125 +635,339 @@ function LoginPage() {
       </div>
 
       {/* Right Login Section */}
-      <div className="flex items-center justify-center p-8 bg-background">
-        <div className="w-full max-w-[420px]">
-          {/* Mobile Logo */}
-          <div className="lg:hidden flex items-center justify-center gap-2 text-lg font-semibold mb-12">
-            <div className="size-8 rounded-lg bg-primary/10 flex items-center justify-center">
-              <Sparkles className="size-4 text-primary" />
-            </div>
-            <span>YourBrand</span>
-          </div>
+     {/* Right Login Section */}
+            <div className="flex items-center justify-center bg-background">
+              <div className="w-full max-w-[420px] mx-auto px-6">
 
-          {/* Header */}
-          <div className="text-center mb-10">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome back!</h1>
-            <p className="text-muted-foreground text-sm">Please enter your details</p>
-          </div>
+                {/* HEADER */}
+                <div className="text-center mb-8">
+                  <h1 className="text-3xl font-bold tracking-tight mb-2">
+                    {isSignup ? "Create Account" : "Welcome back!"}
+                  </h1>
+                  <p className="text-muted-foreground text-sm">
+                    {isSignup ? "Fill details to continue" : "Please enter your details"}
+                  </p>
+                </div>
 
-          {/* Login Form */}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="anna@gmail.com"
-                value={email}
-                autoComplete="off"
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={() => setIsTyping(true)}
-                onBlur={() => setIsTyping(false)}
-                required
-                className="h-12 bg-background border-border/60 focus:border-primary"
-              />
-            </div>
+                {/* 🔥 PIN INPUT WITH ANIMATION */}
 
-            <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  className="h-12 pr-10 bg-background border-border/60 focus:border-primary"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  {showPassword ? (
-                    <EyeOff className="size-5" />
-                  ) : (
-                    <Eye className="size-5" />
+              
+
+                {/* FORM */}
+                <form onSubmit={handleSubmit} className="space-y-5">
+
+                  {/* NAME (SIGNUP ONLY) */}
+                  {isSignup && (
+                    <div className="space-y-2">
+                      <Label>Name</Label>
+                      <Input
+                        placeholder="Enter your name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        onFocus={() => setIsTyping(true)}
+                        onBlur={() => setIsTyping(false)}
+                      />
+                    </div>
                   )}
-                </button>
+
+                  {/* EMAIL */}
+                  <div className="space-y-2">
+                    <Label>Email</Label>
+                    <Input
+                      type="email"
+                      placeholder="anna@gmail.com"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      onFocus={() => setIsTyping(true)}
+                      onBlur={() => setIsTyping(false)}
+                      className="h-12"
+                    />
+                  </div>
+
+                  {/* PHONE (SIGNUP ONLY) */}
+                  {isSignup && (
+                    <div className="space-y-2">
+                      <Label>Phone</Label>
+                    <Input
+                        placeholder="Enter phone number"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value.replace(/\D/g, ""))}
+                        onFocus={() => setIsTyping(true)}
+                        onBlur={() => setIsTyping(false)}
+                      />
+                    </div>
+                  )}
+
+                  {/* PASSWORD */}
+              <div className="space-y-2">
+              <Label>Password</Label>
+
+              <div className="relative flex gap-2 items-center">
+                <div className="relative w-full">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    onFocus={() => {
+                      setIsTyping(true);
+                      if (isSignup && email && phone) setShowSendOtp(true);
+                    }}
+                    onBlur={() => setIsTyping(false)}
+                    className="h-12 pr-10"
+                  />
+
+                  {/* 👁️ FIXED EYE BUTTON */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+
+                {/* OTP BUTTON */}
+                {/* {isSignup && showSendOtp && !otpVerified && (
+                  <button
+                    type="button"
+                    onClick={otpRequested ? handleVerifyOtp : handleSendOtp}
+                    className="px-3 text-xs bg-black-200 text-white rounded-lg"
+                  >
+                    {otpRequested ? "Verify OTP" : "Send OTP"}
+                  </button>
+                )} */}
               </div>
             </div>
+        
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <Checkbox id="remember" />
-                <Label
-                  htmlFor="remember"
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  Remember for 30 days
-                </Label>
-              </div>
-              <a
-                href="#"
-                className="text-sm text-primary hover:underline font-medium"
-              >
-                Forgot password?
-              </a>
-            </div>
-
-            {error && (
-              <div className="p-3 text-sm text-red-400 bg-red-950/20 border border-red-900/30 rounded-lg">
-                {error}
-              </div>
-            )}
-
-            <Button 
-              type="submit" 
-              className="w-full h-12 text-base font-medium" 
-              size="lg" 
-              disabled={isLoading}
-            >
-              {isLoading ? "Signing in..." : "Log in"}
-            </Button>
-          </form>
-
-          {/* Social Login */}
-          <div className="mt-6">
-            <Button 
-              variant="outline" 
-              className="w-full h-12 bg-background border-border/60 hover:bg-accent"
-              type="button"
-            >
-              <Mail className="mr-2 size-5" />
-              Log in with Google
-            </Button>
+      {/* REMEMBER ONLY LOGIN */}
+      {!isSignup && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Checkbox />
+            <Label className="text-sm">Remember</Label>
           </div>
-
-          {/* Sign Up Link */}
-          <div className="text-center text-sm text-muted-foreground mt-8">
-            Don't have an account?{" "}
-            <a href="#" className="text-foreground font-medium hover:underline">
-              Sign Up
-            </a>
-          </div>
+          <span className="text-sm text-primary cursor-pointer">
+            Forgot password?
+          </span>
         </div>
+      )}
+
+      {/* BUTTON */}
+      <button
+        type="submit"
+        style={{ backgroundColor: "#d4d4d4", color: "black" }}
+        className="w-full h-12 rounded-xl font-medium flex items-center justify-center"
+      >
+        {isLoading
+          ? "Processing..."
+          : isSignup
+          ? "Sign Up"
+          : "Log in"}
+      </button>
+
+    </form>
+
+    {/* GOOGLE (ONLY LOGIN) */}
+    {!isSignup && (
+      <div className="mt-6">
+       
       </div>
+    )}
+
+    {/* TOGGLE */}
+    <div className="text-center text-sm mt-6">
+      {isSignup ? "Already have an account? " : "Don't have an account? "}
+      <span
+        onClick={() => setIsSignup(!isSignup)}
+        className="font-medium cursor-pointer"
+      >
+        {isSignup ? "Log in" : "Sign Up"}
+      </span>
     </div>
+
+  </div>
+</div>
+
+
+
+{showOtpModal && (
+  <div className="fixed inset-0 flex items-center justify-center z-50">
+
+    {/* BACKGROUND */}
+    <div className="absolute inset-0 bg-black/80 backdrop-blur-md"></div>
+
+    {/* MODAL */}
+    <div
+      className={`relative  bg-gray-1000 rounded-[20px] px-8 py-10 w-[400px] h-[245px]  text-center z-10 shadow-[0_0_40px_rgba(0,0,0,0.6)] ${
+        shake ? "animate-shake" : ""
+      }`}
+    >
+
+      {/* CLOSE BUTTON */}
+     <button
+      onClick={() => setShowOtpModal(false)}
+      style={{
+        position: "absolute",
+        top: "16px",
+        right: "16px",
+        width: "36px",
+        height: "36px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: "8px",
+        backgroundColor: "#020618", // gray-800
+        color: "white",
+        cursor: "pointer",
+        transition: "all 0.2s ease",
+      }}
+
+    >
+      ✕
+    </button>
+
+      {/* SUCCESS */}
+      {success ? (
+        <div className="text-white text-center py-10">
+          <div className="text-5xl mb-4 animate-bounce">✔</div>
+          <p className="text-lg font-medium">Verified Successfully</p>
+        </div>
+      ) : (
+        <>
+          {/* TITLE */}
+          <h2
+            style={{
+              
+              color: "white",
+              fontSize: "20px",   // text-xl
+              fontWeight: 600,    // font-semibold
+              marginBottom: "20px", // mb-10
+               marginTop: "6px",   // 👈 THIS MOVES IT DOWN
+               display: "inline-block",
+            }}
+          >
+            Enter OTP
+          </h2>
+
+          {/* PIN INPUT */}
+          <div className="flex justify-center gap-5 mb-10 ">
+            {pin.map((v, i) => (
+              <input
+                key={i}
+                ref={(el) => (pinRefs.current[i] = el!)}
+                value={v}
+                maxLength={1}
+                className="w-14 h-14 rounded-xl bg-white text-black text-center text-xl font-bold outline-none shadow-md focus:scale-105 transition"
+
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const newPin = [...pin];
+                  newPin[i] = val;
+                  setPin(newPin);
+
+                  if (val && i < 3) {
+                    pinRefs.current[i + 1]?.focus();
+                  }
+                }}
+
+                onKeyDown={(e) => {
+                  if (e.key === "Backspace" && !pin[i] && i > 0) {
+                    pinRefs.current[i - 1]?.focus();
+                  }
+                }}
+
+                onPaste={(e) => {
+                  const paste = e.clipboardData.getData("text").slice(0, 4);
+                  if (!paste) return;
+
+                  const arr = paste.split("");
+                  setPin(arr);
+
+                  arr.forEach((char, index) => {
+                    if (pinRefs.current[index]) {
+                      pinRefs.current[index].value = char;
+                    }
+                  });
+
+                  pinRefs.current[arr.length - 1]?.focus();
+                }}
+              />
+            ))}
+          </div>
+
+          {/* BUTTON */}
+         <button
+            onClick={async () => {
+              if (!otpRequested) {
+                await handleSendOtp();
+              } else {
+                await handleVerifyOtp();
+              }
+            }}
+            style={{
+              width: "40%",              // better than w-35
+              height: "48px",             // h-12
+              marginTop: "35px",          // spacing (mt-6)
+              backgroundColor: "white",
+              color: "black",             // ✅ FIXED
+              borderRadius: "12px",       // rounded-xl
+              fontWeight: 600,
+              cursor: "pointer",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.2)", // shadow-md
+              transition: "all 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.03)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+            }}
+          >
+            {otpRequested ? "Verify OTP" : "Send OTP"}
+          </button>
+
+
+          {/* TIMER */}
+          {otpRequested && (
+            <p className="text-gray-400 text-sm mt-6">
+              {timer > 0 ? (
+                `Resend in ${timer}s`
+              ) : (
+               <span
+                onClick={handleSendOtp}
+                style={{
+                  color: "white",
+                  cursor: "pointer",
+                  textDecoration: "none",
+                   marginTop: "16px",   // 👈 THIS MOVES IT DOWN
+                   display: "inline-block",
+                  transition: "all 0.2s ease",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.textDecoration = "underline";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.textDecoration = "none";
+                }}
+              >
+                Resend OTP
+              </span>
+              )}
+            </p>
+          )}
+        </>
+      )}
+    </div>
+  </div>
+)}  
+
+</div>
   );
 }
 
 
 
-export default LoginPage;
+export const Component = LoginPage;
+
+

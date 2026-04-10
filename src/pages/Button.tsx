@@ -8,7 +8,8 @@ const Button = () => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate('/login');
+    navigate('/loginpage2');
+    // navigate('/login');
   };
 
   return (

@@ -859,17 +859,15 @@
 // export default Explorepage;
 
 
-import { Badge } from "@/Components/ui/badge";
-import { Button } from "@/Components/ui/button";
+import { Button1 } from "@/components/rainbow-borders-button";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { ShoppingCart } from "lucide-react";
 import React, {
-  useState,
   useRef,
-  useCallback,
-  useEffect,
+  useState
 } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button1 } from "@/Components/rainbow-borders-button";
 import "./Explore.css";
 
 /* ================= TYPES ================= */

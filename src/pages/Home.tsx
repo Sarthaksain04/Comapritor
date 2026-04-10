@@ -507,9 +507,8 @@ import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
 
 import Lenis from "@studio-freight/lenis";
-import ContactPage from "./ContactPage";
 import Reels from "../assets/Reels.png";
-import { Component } from "@/Components/sterling-gate-kinetic-navigation";
+import ContactPage from "./ContactPage";
 
 
 gsap.registerPlugin(ScrollTrigger);

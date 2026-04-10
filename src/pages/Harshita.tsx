@@ -59,16 +59,7 @@ function Harshita() {
 
 
   return (
-<div
-  style={{
-    height: "100vh",
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    background: "linear-gradient(135deg, #ff9a9e, #fad0c4)", // 💖 pink gradient
-  }}
->
+     <div className="page-center1">
 
        <audio
         ref={audioRef}

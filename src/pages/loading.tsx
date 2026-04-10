@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Component } from "@/Components/hyperspeed";
+import { Component } from "@/components/hyperspeed";
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Loading = () => {
   const navigate = useNavigate();

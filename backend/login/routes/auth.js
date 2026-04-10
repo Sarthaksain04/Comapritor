@@ -99,6 +99,7 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import { sendEmailOtp, sendSmsOtp } from "../utils/sendOtp.js";
 import { v4 as uuidv4 } from "uuid";
+import { sendLoginSuccessEmail } from "../utils/sendOtp.js";
 
 
 const router = express.Router();
@@ -141,6 +142,8 @@ router.post("/verify-otp", async (req, res) => {
   res.json({ message: "OTP verified" });
 });
 
+
+
 // ✅ Register (only after OTP verification)
 router.post("/register", async (req, res) => {
   const { name, email, phone, password } = req.body;
@@ -166,6 +169,9 @@ router.post("/register", async (req, res) => {
   res.json({ message: "Registration successful" });
 });
 
+
+
+
 // ✅ Login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
@@ -184,7 +190,7 @@ router.post("/login", async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
-
+sendLoginSuccessEmail(email); 
   res.json({ token });
 });
 

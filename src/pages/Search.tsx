@@ -1,7 +1,7 @@
 "use client";
 
+import { AnimatedBeam } from "@/components/animated-beam"; // Adjust if needed
 import { useRef } from "react";
-import { AnimatedBeam } from "@/Components/animated-beam"; // Adjust if needed
 
 export default function Search() {
   const containerRef = useRef<HTMLDivElement>(null);

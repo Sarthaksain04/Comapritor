@@ -1,10 +1,9 @@
-import React from "react";
-import "./ContactPage.css";
-import { TextAnimate } from "../Components/ui/text-animate";
-import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/dist/ScrollTrigger";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { TextAnimate } from "../components/ui/text-animate";
+import "./ContactPage.css";
 gsap.registerPlugin(ScrollTrigger);
 
 

@@ -330,12 +330,12 @@
 
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight } from "lucide-react";
-import { AnimatedBeam } from "../Components/animated-beam";
-import FuturisticProductCard from "@/Components/FuturisticProductCard";
+import FuturisticProductCard from "@/components/FuturisticProductCard";
+import { AnimatePresence, motion } from "framer-motion";
+import { ArrowRight, Sparkles } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AnimatedBeam } from "../components/animated-beam";
 
 
 const Product: React.FC = () => {

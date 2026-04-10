@@ -1,7 +1,6 @@
-import React from "react";
-import "./Page2.css";
+import { TextAnimate } from "@/components/ui/text-animate";
 import { useNavigate } from "react-router-dom";
-import { TextAnimate } from "@/Components/ui/text-animate";
+import "./Page2.css";
 
 
 const Page2 = () => {

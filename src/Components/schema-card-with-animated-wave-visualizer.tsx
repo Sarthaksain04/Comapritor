@@ -1,8 +1,8 @@
 'use client';
 
-import  { useEffect, useRef } from "react";
-import FuturisticProductCard from "@/Components/FuturisticProductCard"; 
+import FuturisticProductCard from "@/components/FuturisticProductCard";
 import { motion } from 'framer-motion';
+import { useEffect, useRef } from "react";
 
 export default function SchemaCard() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
