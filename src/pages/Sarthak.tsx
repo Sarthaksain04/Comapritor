@@ -85,7 +85,40 @@ function Sarthak() {
           className="static-spline"
         scene="https://prod.spline.design/hTBnxFWE73d5rKcG/scene.splinecode" 
         />
-      </div>    
+      </div>
+
+
+ <div className="right-box1">
+  <h2 className="title1">About Me</h2>
+
+  <p className="desc1">
+    Hey 👋 I'm Sarthak — a passionate developer who enjoys building
+    interactive apps, 3D experiences, and modern UI systems. I focus on
+    performance, creativity, and real-world problem solving.
+  </p>
+
+  <div className="contact-section1">
+    <h3>Connect with me</h3>
+
+    <div className="links1">
+      <a href="mailto:yourmail@gmail.com">
+        <span>📧</span> Email
+      </a>
+
+      <a href="https://www.linkedin.com/in/sarthak-sain-795606257" target="_blank" rel="noopener noreferrer">
+        <span>💼</span> LinkedIn
+      </a>
+
+      <a href="#">
+        <span>🧠</span> LeetCode
+      </a>
+
+      <a href="https://github.com/Sarthaksain04">
+        <span>💻</span> GitHub
+      </a>
+    </div>
+  </div>
+</div>    
     </div>
   );
 }

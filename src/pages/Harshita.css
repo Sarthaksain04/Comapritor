@@ -1,11 +1,14 @@
 /* Center all 3 cards */
 .page-center1 {
   width: 100vw;
-  height: 100vh;
+  height: 104vh;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 60px;
+  overflow: hidden;
+    background: #aa1a82;
+
 }
 
 /* Medium-sized card container */
@@ -28,8 +31,10 @@
 /* Spline model */
 .static-spline1 {
   pointer-events: none !important;
-  width: 100%;
+  width: 120%; /* 🔥 make canvas bigger */
   height: 100%;
+  transform: translateX(-450px); /* ✅ SAVE YOUR FINAL VALUE HERE */
+
 }
 
 /* Speech bubble */
@@ -67,4 +72,86 @@
 }
 
 
+.right-box {
+  position: absolute;
+  right: 80px;
+  top: 53%;
+  transform: translateY(-50%);
+  width: 780px;
+  height: 500px;
+  padding: 30px;
+  border-radius: 20px;
+  z-index: 10;
+  
 
+  /* 🔥 DARK GLASS BG */
+  background: linear-gradient(
+    145deg,
+    rgba(12, 12, 12, 0.9),
+    rgba(20, 20, 20, 0.85)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* 🔥 PREMIUM SHADOW */
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.4),
+    0 20px 80px rgba(0, 0, 0, 0.6),
+    0 0 40px rgba(170, 26, 130, 0.25);
+}
+
+/* TITLE */
+.title1 {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #aa1a82, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* DESCRIPTION */
+.desc {
+  margin-top: 15px;
+  color: #a1a1aa;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+/* CONTACT */
+.contact-section {
+  margin-top: 40px;
+}
+
+.contact-section h3 {
+  color: #f472b6;
+  margin-bottom: 15px;
+  font-size: 18px;
+}
+
+/* LINKS */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.links a {
+  text-decoration: none;
+  color: white;
+  font-size: 14px;
+  padding: 10px 14px;
+  border-radius: 10px;
+
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  transition: all 0.3s ease;
+}
+
+/* 🔥 HOVER EFFECT */
+.links a:hover {
+  background: rgba(170, 26, 130, 0.2);
+  border: 1px solid #aa1a82;
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(170, 26, 130, 0.4);
+}

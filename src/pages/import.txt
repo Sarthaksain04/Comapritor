@@ -1,5 +1,6 @@
-import { Component } from "@/components/ui/animated-characters-login-page";
+import CenteredFeedbackDrawer from "@/components/ui/centered-feedback-drawer";
 
 export default function DemoOne() {
-  return <Component />;
+  return <CenteredFeedbackDrawer />;
 }
+

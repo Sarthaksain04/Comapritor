@@ -482,6 +482,10 @@
 // export default Home;
 
 
+
+
+
+
 import { useEffect, useState } from "react";
 import Joyride from "react-joyride";
 import { useNavigate } from "react-router-dom";
@@ -509,6 +513,7 @@ import ScrollTrigger from "gsap/dist/ScrollTrigger";
 import Lenis from "@studio-freight/lenis";
 import Reels from "../assets/Reels.png";
 import ContactPage from "./ContactPage";
+import confetti from "canvas-confetti";
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -523,10 +528,30 @@ const Home = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
+ useEffect(() => {
+  const checkLogin = () => {
     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
     setIsLoggedIn(loggedIn);
-  }, []);
+  };
+
+  checkLogin(); // initial
+
+  // 🔥 LISTEN FOR LOGIN CHANGE
+  window.addEventListener("loginStatusChanged", checkLogin);
+
+  return () => {
+    window.removeEventListener("loginStatusChanged", checkLogin);
+  };
+}, []);
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+    setIsLoggedIn(loggedIn);
+  }, 500);
+
+  return () => clearInterval(interval);
+}, []);
 
   useEffect(() => {
   const lenis = new Lenis({
@@ -569,6 +594,48 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
 }, []);
 
 
+
+ useEffect(() => {
+    const isNewUser = localStorage.getItem("justSignedUp")
+
+    if (isNewUser === "true") {
+      triggerConfetti()
+
+      // ❗ Remove so it runs only once
+      localStorage.removeItem("justSignedUp")
+    }
+  }, [])
+
+  const triggerConfetti = () => {
+    const end = Date.now() + 20 * 1000
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
+
+    const frame = () => {
+      if (Date.now() > end) return
+
+      confetti({
+        particleCount: 2,
+        angle: 60,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 0, y: 0.5 },
+        colors: colors,
+      })
+
+      confetti({
+        particleCount: 2,
+        angle: 120,
+        spread: 55,
+        startVelocity: 60,
+        origin: { x: 1, y: 0.5 },
+        colors: colors,
+      })
+
+      requestAnimationFrame(frame)
+    }
+
+    frame()
+  }
   const steps = [
     {
       target: ".login-btn",
@@ -621,7 +688,7 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
       {!isLoggedIn && (
         <Joyride
           steps={steps}
-          run={!localStorage.getItem("isLoggedIn")}
+          run={!isLoggedIn}
           continuous
           showProgress
           disableCloseOnEsc
@@ -845,25 +912,26 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
           Compare products from Amazon, Flipkart, and Meesho in one click with our smart AI-powered tool.
         </p>
 
-<button 
-  className="hero-btn"
-  onClick={() => navigate("./explore")}
->
-  Start Exploring
-</button>
-      </main>
-    </div>
-  <div className="svg-path">
-        <svg width="896" height="999" viewBox="0 0 898 999" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path id="animated-path" d="M17.5044 17.5044C270.154 85.7504 249.14 260.416 242.004 267.504C234.869 274.593 187.042 368.305 116.004 277.004C44.9665 185.704 266.189 72.9639 326.017 98.0044C401.725 103.415 382.101 207.278 463.004 249.504C527.594 271.084 546.004 225.004 578.004 209.004C610.004 193.004 701.004 202.004 669.504 289.504C638.004 377.004 710.377 336.043 732.504 377.004C754.632 417.966 551.504 647.504 463.004 644.504C374.505 641.504 434.504 431.004 515.504 499.504C596.504 568.004 577.934 971.604 700.504 828.004C823.075 684.405 878.504 886.504 878.504 886.504" stroke="url(#paint0_linear_26_2)" stroke-width="20" stroke-linecap="round"/>
-        <defs>
-        <linearGradient id="paint0_linear_26_2" x1="1056" y1="191.004" x2="1004" y2="55.0044" gradientUnits="userSpaceOnUse">
-        <stop stop-color="#FE8BBB"/>
-        <stop offset="1" stop-color="#9C79FC"/>
-        </linearGradient>
-        </defs>
-        </svg>
-      </div>
+        <button 
+          className="hero-btn"
+          onClick={() => navigate("./explore")}
+        >
+          Start Exploring
+        </button>
+        
+              </main>
+            </div>
+          <div className="svg-path">
+                <svg width="896" height="999" viewBox="0 0 898 999" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path id="animated-path" d="M17.5044 17.5044C270.154 85.7504 249.14 260.416 242.004 267.504C234.869 274.593 187.042 368.305 116.004 277.004C44.9665 185.704 266.189 72.9639 326.017 98.0044C401.725 103.415 382.101 207.278 463.004 249.504C527.594 271.084 546.004 225.004 578.004 209.004C610.004 193.004 701.004 202.004 669.504 289.504C638.004 377.004 710.377 336.043 732.504 377.004C754.632 417.966 551.504 647.504 463.004 644.504C374.505 641.504 434.504 431.004 515.504 499.504C596.504 568.004 577.934 971.604 700.504 828.004C823.075 684.405 878.504 886.504 878.504 886.504" stroke="url(#paint0_linear_26_2)" stroke-width="20" stroke-linecap="round"/>
+                <defs>
+                <linearGradient id="paint0_linear_26_2" x1="1056" y1="191.004" x2="1004" y2="55.0044" gradientUnits="userSpaceOnUse">
+                <stop stop-color="#FE8BBB"/>
+                <stop offset="1" stop-color="#9C79FC"/>
+                </linearGradient>
+                </defs>
+                </svg>
+              </div>
 
         {/* <img src={game} alt="Promotional" className="promo-image" /> */}
         {/* <img src={headphone} alt="Promotional1" className="promo-image2" /> */}
@@ -898,7 +966,6 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
       </div> */}
        
       </section>
-     
       
       <section className="page1-section">
         <Page1 />

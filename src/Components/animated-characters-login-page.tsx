@@ -209,6 +209,7 @@ function LoginPage() {
   const [success, setSuccess] = useState(false);
   const [timer, setTimer] = useState(30);
   const [shake, setShake] = useState(false);
+  const [remember, setRemember] = useState(false);
 
 
   const getOtp = () => pin.join("");
@@ -374,10 +375,16 @@ function LoginPage() {
       const data = await res.json();
 
       if (res.ok) {
+
+        console.log("✅ Login success:", data);
         localStorage.setItem("token", data.token);
-        alert("Login success!");
+        localStorage.setItem("isLoggedIn", "true"); // ✅ ADD THIS
+
+        window.dispatchEvent(new Event("loginStatusChanged"));
+        navigate("/");
       } else {
-        alert(data.error);
+        console.log("❌ Login failed:", data);
+        alert(data.message || "Invalid credentials");
       }
     }
   } catch {
@@ -437,6 +444,7 @@ const handleVerifyOtp = async () => {
 
   setTimeout(() => {
     setShowOtpModal(false);
+    localStorage.setItem("justSignedUp", "true");
     navigate("/");
   }, 2000);
 
@@ -675,8 +683,9 @@ const handleVerifyOtp = async () => {
                     <Label>Email</Label>
                     <Input
                       type="email"
-                      placeholder="anna@gmail.com"
+                      placeholder="Enter your email"
                       value={email}
+                      autoComplete="off"
                       onChange={(e) => setEmail(e.target.value)}
                       onFocus={() => setIsTyping(true)}
                       onBlur={() => setIsTyping(false)}
@@ -707,6 +716,7 @@ const handleVerifyOtp = async () => {
                   <Input
                     type={showPassword ? "text" : "password"}
                     value={password}
+                    autoComplete="new-password"
                     onChange={(e) => setPassword(e.target.value)}
                     onFocus={() => {
                       setIsTyping(true);
@@ -742,29 +752,117 @@ const handleVerifyOtp = async () => {
 
       {/* REMEMBER ONLY LOGIN */}
       {!isSignup && (
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <Checkbox />
-            <Label className="text-sm">Remember</Label>
-          </div>
-          <span className="text-sm text-primary cursor-pointer">
-            Forgot password?
-          </span>
-        </div>
+       <div
+  style={{
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  }}
+>
+  {/* LEFT SIDE */}
+  <div
+    style={{
+      display: "flex",
+      alignItems: "center",
+      gap: "8px",
+      cursor: "pointer",
+    }}
+    onClick={() => setRemember(!remember)}
+  >
+    {/* CUSTOM CHECKBOX */}
+    <div
+      style={{
+        width: "18px",
+        height: "18px",
+        borderRadius: "4px",
+        border: "2px solid #6366f1",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: remember ? "#6366f1" : "transparent",
+        transition: "all 0.2s ease",
+      }}
+    >
+      {remember && (
+        <span
+          style={{
+            color: "white",
+            fontSize: "12px",
+            fontWeight: "bold",
+          }}
+        >
+          ✓
+        </span>
+      )}
+    </div>
+
+    {/* LABEL */}
+    <span
+      style={{
+        fontSize: "14px",
+        color: "#d1d5db",
+      }}
+    >
+      Remember
+    </span>
+  </div>
+
+  {/* RIGHT SIDE */}
+  <span
+    style={{
+      fontSize: "14px",
+      color: "#6366f1",
+      cursor: "pointer",
+      transition: "all 0.2s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.textDecoration = "underline";
+      e.currentTarget.style.color = "#818cf8";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.textDecoration = "none";
+      e.currentTarget.style.color = "#6366f1";
+    }}
+    onClick={() => navigate("/forgot-password")}
+  >
+    Forgot password?
+  </span>
+</div>
       )}
 
       {/* BUTTON */}
-      <button
-        type="submit"
-        style={{ backgroundColor: "#d4d4d4", color: "black" }}
-        className="w-full h-12 rounded-xl font-medium flex items-center justify-center"
-      >
-        {isLoading
-          ? "Processing..."
-          : isSignup
-          ? "Sign Up"
-          : "Log in"}
-      </button>
+     <button
+  type="submit"
+  style={{
+    width: "100%",
+    height: "48px",
+    backgroundColor: "#d4d4d4",
+    color: "black",
+    borderRadius: "12px",
+    fontWeight: 500,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    cursor: "pointer",
+    transition: "all 0.2s ease",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+    marginTop: "20px",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.backgroundColor = "#c0c0c0";
+    e.currentTarget.style.transform = "scale(1.02)";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.backgroundColor = "#d4d4d4";
+    e.currentTarget.style.transform = "scale(1)";
+  }}
+>
+  {isLoading
+    ? "Processing..."
+    : isSignup
+    ? "Sign Up"
+    : "Log in"}
+</button>
 
     </form>
 
@@ -776,15 +874,37 @@ const handleVerifyOtp = async () => {
     )}
 
     {/* TOGGLE */}
-    <div className="text-center text-sm mt-6">
-      {isSignup ? "Already have an account? " : "Don't have an account? "}
-      <span
-        onClick={() => setIsSignup(!isSignup)}
-        className="font-medium cursor-pointer"
-      >
-        {isSignup ? "Log in" : "Sign Up"}
-      </span>
-    </div>
+   <div
+  style={{
+    textAlign: "center",
+    fontSize: "14px",
+    marginTop: "24px",
+    color: "#9ca3af", // muted gray
+  }}
+>
+  {isSignup ? "Already have an account? " : "Don't have an account? "}
+
+  <span
+    onClick={() => setIsSignup(!isSignup)}
+    style={{
+      fontWeight: 600,
+      color: "white",
+      cursor: "pointer",
+      marginLeft: "4px",
+      transition: "all 0.2s ease",
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.textDecoration = "underline";
+      e.currentTarget.style.color = "#d4d4d4";
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.textDecoration = "none";
+      e.currentTarget.style.color = "white";
+    }}
+  >
+    {isSignup ? "Log in" : "Sign Up"}
+  </span>
+</div>
 
   </div>
 </div>

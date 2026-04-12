@@ -21,11 +21,11 @@ const Page2 = () => {
         
      <TextAnimate animation="fadeIn" by="line" as="h1" className="title">Reels</TextAnimate>
         <TextAnimate
-  animation="fadeIn"
-  by="line"
-  as="p"
-  className="subtitle"
->
+          animation="fadeIn"
+          by="line"
+          as="p"
+          className="subtitle"
+        >
   Engage viewers, boost sales, and leverage user-generated content — all 30× faster than traditional video platforms.
 </TextAnimate>
 

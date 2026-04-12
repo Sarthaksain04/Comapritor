@@ -2,19 +2,21 @@
 
 import img1 from "@/assets/Sneha.png";
 import InfiniteGallery from "../components/3d-gallery-photography";
+import CenteredFeedbackDrawer from "@/components/centered-feedback-drawer";
+
 
 
 export default function Feedback() {
 const sampleImages = [
 		{ src: img1, alt: "Image 1" },
 		{ src: img1, alt: "Image 1" },
-    { src: img1, alt: "Image 1" },
-    { src: img1, alt: "Image 1" },
-    { src: img1, alt: "Image 1" },
-    { src: img1, alt: "Image 1" },
-    { src: img1, alt: "Image 1" },
-    { src: img1, alt: "Image 1" },
-	];
+		{ src: img1, alt: "Image 1" },
+		{ src: img1, alt: "Image 1" },
+		{ src: img1, alt: "Image 1" },
+		{ src: img1, alt: "Image 1" },
+		{ src: img1, alt: "Image 1" },
+		{ src: img1, alt: "Image 1" },
+		];
 
   return (
     <main className="min-h-screen h-full w-full">
@@ -37,6 +39,8 @@ const sampleImages = [
 				<p className=" opacity-60">
 					Auto-play resumes after 3 seconds of inactivity
 				</p>
+				     <CenteredFeedbackDrawer />
+
 			</div>
 		</main>
 	);

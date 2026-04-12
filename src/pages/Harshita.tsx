@@ -84,7 +84,27 @@ function Harshita() {
           className="static-spline1"
         scene="https://prod.spline.design/g0g2AEDxsoYpziKd/scene.splinecode" 
         />
-      </div>    
+      </div>
+      <div className="right-box">
+  <h2 className="title1">About Me</h2>
+
+  <p className="desc">
+    Hey 👋 I'm Harshita — a creative developer who loves building immersive,
+    interactive, and visually rich web experiences. I focus on blending design,
+    animation, and performance to create unique digital products.
+  </p>
+
+  <div className="contact-section">
+    <h3>Connect with me</h3>
+
+    <div className="links">
+      <a href="mailto:yourmail@gmail.com">📧 Email</a>
+      <a href="https://linkedin.com" target="_blank">💼 LinkedIn</a>
+      <a href="https://leetcode.com" target="_blank">🧠 LeetCode</a>
+      <a href="https://github.com" target="_blank">💻 GitHub</a>
+    </div>
+  </div>
+</div>    
     </div>
   );
 }

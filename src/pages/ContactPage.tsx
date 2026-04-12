@@ -146,12 +146,7 @@ useEffect(() => {
           <div className="emails">
             <div className="enquires">
               <TextAnimate animation="fadeIn" by="line" as="p" className="label">General enquires</TextAnimate> 
-               <TextAnimate animation="fadeIn" by="line" as="p">hello@comparator.co</TextAnimate>
-            </div>
-
-            <div className="business">
-               <TextAnimate animation="fadeIn" by="line" as="p" className="label">New business</TextAnimate> 
-              <TextAnimate animation="fadeIn" by="line" as="p" className="mail">business@comparator.co</TextAnimate>
+               <TextAnimate animation="fadeIn" by="line" as="p">comparitor09@gmail.com</TextAnimate>
             </div>
           </div>
         </div>
@@ -186,7 +181,7 @@ our newsletter`}
             by="word"
             as="p"
         >
-            ©2025 COMPARATOR Creative Studio
+            ©2025 COMPARITOR Creative Studio
         </TextAnimate>
 
         <TextAnimate
@@ -194,7 +189,7 @@ our newsletter`}
             by="word"
             as="p"
         >
-            S&H: labs.comparator.co
+            S&H: labs.comparitor.co
         </TextAnimate>
 
         <p className="built-by">

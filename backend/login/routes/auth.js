@@ -93,13 +93,24 @@
 
 
 // backend/routes/auth.js
+
+
+
+
+
 import express from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
-import { sendEmailOtp, sendSmsOtp } from "../utils/sendOtp.js";
 import { v4 as uuidv4 } from "uuid";
-import { sendLoginSuccessEmail } from "../utils/sendOtp.js";
+import {
+  sendEmailOtp,
+  sendSmsOtp,
+  sendLoginSuccessEmail,
+  sendRegisterSuccessEmail,
+    sendFeedbackEmail
+} from "../utils/sendOtp.js";
+
 
 
 const router = express.Router();
@@ -129,6 +140,9 @@ router.post("/send-otp", async (req, res) => {
   }
 });
 
+
+
+
 // ✅ Verify OTP
 router.post("/verify-otp", async (req, res) => {
   const { email, otp } = req.body;
@@ -141,6 +155,7 @@ router.post("/verify-otp", async (req, res) => {
   verifiedOtps.set(email, { ...record, verified: true });
   res.json({ message: "OTP verified" });
 });
+
 
 
 
@@ -165,7 +180,12 @@ router.post("/register", async (req, res) => {
   });
 
   verifiedOtps.delete(email); // Clean up
-
+  console.log("🔥 Sending register email...");
+  try {
+    await sendRegisterSuccessEmail(email);
+  } catch (err) {
+    console.error("❌ Register email failed:", err);
+  }
   res.json({ message: "Registration successful" });
 });
 
@@ -190,7 +210,11 @@ router.post("/login", async (req, res) => {
     process.env.JWT_SECRET,
     { expiresIn: "7d" }
   );
-sendLoginSuccessEmail(email); 
+   try {
+  await sendLoginSuccessEmail(email);
+} catch (err) {
+  console.error("❌ Email failed:", err);
+} 
   res.json({ token });
 });
 
@@ -226,6 +250,20 @@ router.post("/reset-password", async (req, res) => {
   verifiedOtps.delete(email);
 
   res.json({ message: "Password reset successful" });
+});
+
+// ✅ Feedback Route
+
+router.post("/feedback", async (req, res) => {
+  const { name, email, rating, message } = req.body;
+
+  if (!name || !email || !message) {
+    return res.status(400).json({ message: "All fields required" });
+  }
+
+  await sendFeedbackEmail(name, email, rating, message);
+
+  res.json({ message: "Feedback sent successfully" });
 });
 
 export default router;

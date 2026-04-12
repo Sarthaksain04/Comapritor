@@ -308,6 +308,209 @@
 
 // export default Reels;
 
+
+
+
+
+
+
+
+
+
+
+// import React, { useState, useEffect, useRef } from "react";
+// import "./Reels.css";
+
+// import { FaHeart, FaRegHeart } from "react-icons/fa";
+// import { IoVolumeMute, IoVolumeHigh } from "react-icons/io5";
+// import { BsBookmark } from "react-icons/bs";
+
+// /* ================= TYPES ================= */
+
+// interface ReelsType {
+//   id: string;
+//   videoUrl: string;
+//   username: string;
+//   caption: string;
+//   likes: string;
+//   visitUrl?: string;
+// }
+
+// /* ================= YOUTUBE EMBED ================= */
+
+// function getEmbedUrl(url: string, muted: boolean): string | null {
+//   if (!url) return null;
+
+//   const mute = muted ? 1 : 0;
+
+//   if (url.includes("shorts")) {
+//     const id = url.split("shorts/")[1].split("?")[0];
+//     return `https://www.youtube.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}`;
+//   }
+
+//   if (url.includes("watch")) {
+//     const id = new URL(url).searchParams.get("v");
+//     if (!id) return null;
+//     return `https://www.youtube.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}`;
+//   }
+
+//   return null;
+// }
+
+// /* ================= MAIN PAGE ================= */
+
+// const Reels: React.FC = () => {
+//   const [reels, setReels] = useState<ReelsType[]>([]);
+//   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+//   const [globalMuted, setGlobalMuted] = useState(true);
+
+//   useEffect(() => {
+//     fetch("http://localhost:8000/reels")
+//       .then((res) => res.json())
+//       .then((data) => {
+//         if (Array.isArray(data)) setReels(data);
+//       });
+//   }, []);
+
+//   if (!reels.length) return null;
+
+//   return (
+//     <div className="page-wrapper">
+//       {reels.map((reel, index) => (
+//         <ReelCard
+//           key={reel.id}
+//           reel={reel}
+//           index={index}
+//           activeIndex={activeIndex}
+//           setActiveIndex={setActiveIndex}
+//           globalMuted={globalMuted}
+//           setGlobalMuted={setGlobalMuted}
+//         />
+//       ))}
+//     </div>
+//   );
+// };
+
+// /* ================= REEL CARD ================= */
+
+// interface Props {
+//   reel: ReelsType;
+//   index: number;
+//   activeIndex: number | null;
+//   setActiveIndex: (i: number) => void;
+//   globalMuted: boolean;
+//   setGlobalMuted: (m: boolean) => void;
+// }
+
+// const ReelCard: React.FC<Props> = ({
+//   reel,
+//   index,
+//   activeIndex,
+//   setActiveIndex,
+//   globalMuted,
+//   setGlobalMuted,
+// }) => {
+//   const ref = useRef<HTMLDivElement>(null);
+
+//   const [liked, setLiked] = useState(false);
+//   const [paused, setPaused] = useState(false);
+//   const [loading, setLoading] = useState(true);
+
+//   /* ===== VISIBILITY ===== */
+//   useEffect(() => {
+//     const observer = new IntersectionObserver(
+//       ([entry]) => {
+//         if (entry.isIntersecting) setActiveIndex(index);
+//       },
+//       { threshold: 0.8 }
+//     );
+
+//     if (ref.current) observer.observe(ref.current);
+//     return () => observer.disconnect();
+//   }, [index]);
+
+//   const shouldPlay = activeIndex === index && !paused;
+
+//   const embedUrl = shouldPlay
+//     ? getEmbedUrl(reel.videoUrl, globalMuted)
+//     : null;
+
+//   useEffect(() => {
+//     setLoading(true);
+//   }, [embedUrl]);
+
+//   return (
+//     <div ref={ref} className="reel-layout">
+//       <div className="video-container">
+
+//         {embedUrl && (
+//           <iframe
+//             src={embedUrl}
+//             className="reel-iframe"
+//             allow="autoplay; encrypted-media"
+//             allowFullScreen
+//             onLoad={() => setLoading(false)}
+//           />
+//         )}
+
+//         {loading && (
+//           <div className="paused-overlay">
+//             ⏳
+//           </div>
+//         )}
+
+//         {reel.visitUrl && (
+//           <a
+//             href={reel.visitUrl}
+//             target="_blank"
+//             rel="noopener noreferrer"
+//             className="visit-btn"
+//           >
+//             Visit Site
+//           </a>
+//         )}
+
+//         <div className="video-overlay">
+//           <div className="user-row">
+//             <strong>{reel.username}</strong>
+//           </div>
+//           <p>{reel.caption}</p>
+//         </div>
+//       </div>
+
+//       <div className="side-actions">
+
+//         <button onClick={() => setLiked(!liked)}>
+//           {liked ? <FaHeart /> : <FaRegHeart />}
+//         </button>
+
+//         <button onClick={() => setGlobalMuted(!globalMuted)}>
+//           {globalMuted ? <IoVolumeMute /> : <IoVolumeHigh />}
+//         </button>
+
+//         <button>
+//           <BsBookmark />
+//         </button>
+
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Reels;
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React, {
   useState,
   useEffect,
@@ -518,188 +721,3 @@ export default Reels;
 
 
 
-
-
-
-
-
-// import React, { useState, useEffect, useRef } from "react";
-// import "./Reels.css";
-
-// import { FaHeart, FaRegHeart } from "react-icons/fa";
-// import { IoVolumeMute, IoVolumeHigh } from "react-icons/io5";
-// import { BsBookmark } from "react-icons/bs";
-
-// /* ================= TYPES ================= */
-
-// interface ReelsType {
-//   id: string;
-//   videoUrl: string;
-//   username: string;
-//   caption: string;
-//   likes: string;
-//   visitUrl?: string;
-// }
-
-// /* ================= YOUTUBE EMBED ================= */
-
-// function getEmbedUrl(url: string, muted: boolean): string | null {
-//   if (!url) return null;
-
-//   const mute = muted ? 1 : 0;
-
-//   if (url.includes("shorts")) {
-//     const id = url.split("shorts/")[1].split("?")[0];
-//     return `https://www.youtube.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}`;
-//   }
-
-//   if (url.includes("watch")) {
-//     const id = new URL(url).searchParams.get("v");
-//     if (!id) return null;
-//     return `https://www.youtube.com/embed/${id}?autoplay=1&mute=${mute}&controls=0&loop=1&playlist=${id}`;
-//   }
-
-//   return null;
-// }
-
-// /* ================= MAIN PAGE ================= */
-
-// const Reels: React.FC = () => {
-//   const [reels, setReels] = useState<ReelsType[]>([]);
-//   const [activeIndex, setActiveIndex] = useState<number | null>(null);
-//   const [globalMuted, setGlobalMuted] = useState(true);
-
-//   useEffect(() => {
-//     fetch("http://localhost:8000/reels")
-//       .then((res) => res.json())
-//       .then((data) => {
-//         if (Array.isArray(data)) setReels(data);
-//       });
-//   }, []);
-
-//   if (!reels.length) return null;
-
-//   return (
-//     <div className="page-wrapper">
-//       {reels.map((reel, index) => (
-//         <ReelCard
-//           key={reel.id}
-//           reel={reel}
-//           index={index}
-//           activeIndex={activeIndex}
-//           setActiveIndex={setActiveIndex}
-//           globalMuted={globalMuted}
-//           setGlobalMuted={setGlobalMuted}
-//         />
-//       ))}
-//     </div>
-//   );
-// };
-
-// /* ================= REEL CARD ================= */
-
-// interface Props {
-//   reel: ReelsType;
-//   index: number;
-//   activeIndex: number | null;
-//   setActiveIndex: (i: number) => void;
-//   globalMuted: boolean;
-//   setGlobalMuted: (m: boolean) => void;
-// }
-
-// const ReelCard: React.FC<Props> = ({
-//   reel,
-//   index,
-//   activeIndex,
-//   setActiveIndex,
-//   globalMuted,
-//   setGlobalMuted,
-// }) => {
-//   const ref = useRef<HTMLDivElement>(null);
-
-//   const [liked, setLiked] = useState(false);
-//   const [paused, setPaused] = useState(false);
-//   const [loading, setLoading] = useState(true);
-
-//   /* ===== VISIBILITY ===== */
-//   useEffect(() => {
-//     const observer = new IntersectionObserver(
-//       ([entry]) => {
-//         if (entry.isIntersecting) setActiveIndex(index);
-//       },
-//       { threshold: 0.8 }
-//     );
-
-//     if (ref.current) observer.observe(ref.current);
-//     return () => observer.disconnect();
-//   }, [index]);
-
-//   const shouldPlay = activeIndex === index && !paused;
-
-//   const embedUrl = shouldPlay
-//     ? getEmbedUrl(reel.videoUrl, globalMuted)
-//     : null;
-
-//   useEffect(() => {
-//     setLoading(true);
-//   }, [embedUrl]);
-
-//   return (
-//     <div ref={ref} className="reel-layout">
-//       <div className="video-container">
-
-//         {embedUrl && (
-//           <iframe
-//             src={embedUrl}
-//             className="reel-iframe"
-//             allow="autoplay; encrypted-media"
-//             allowFullScreen
-//             onLoad={() => setLoading(false)}
-//           />
-//         )}
-
-//         {loading && (
-//           <div className="paused-overlay">
-//             ⏳
-//           </div>
-//         )}
-
-//         {reel.visitUrl && (
-//           <a
-//             href={reel.visitUrl}
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             className="visit-btn"
-//           >
-//             Visit Site
-//           </a>
-//         )}
-
-//         <div className="video-overlay">
-//           <div className="user-row">
-//             <strong>{reel.username}</strong>
-//           </div>
-//           <p>{reel.caption}</p>
-//         </div>
-//       </div>
-
-//       <div className="side-actions">
-
-//         <button onClick={() => setLiked(!liked)}>
-//           {liked ? <FaHeart /> : <FaRegHeart />}
-//         </button>
-
-//         <button onClick={() => setGlobalMuted(!globalMuted)}>
-//           {globalMuted ? <IoVolumeMute /> : <IoVolumeHigh />}
-//         </button>
-
-//         <button>
-//           <BsBookmark />
-//         </button>
-
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Reels;
