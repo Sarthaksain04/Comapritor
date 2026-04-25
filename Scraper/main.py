@@ -223,28 +223,152 @@
 
 
 
+# import os
+# import time
+# from datetime import datetime
+# from fastapi import FastAPI, HTTPException
+# from fastapi.middleware.cors import CORSMiddleware
+# from pydantic import BaseModel
+# from pymongo import MongoClient
+# from dotenv import load_dotenv
+# from bson import ObjectId
+# from fastapi import FastAPI
+# from fastapi.middleware.cors import CORSMiddleware
+# from fastapi import Body
+
+
+# from reels_api import get_product_reels
+
+# from serpapi_shopping import scrape_google_shopping
+
+# load_dotenv()
+
+# # ---------------- APP ----------------
+# app = FastAPI(title="Google Shopping Aggregator")
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
+# # ---------------- DB ----------------
+# MONGO_URI = os.getenv("MONGODB_URI")
+# client = MongoClient(MONGO_URI)
+# db = client["comparitor_db"]
+# collection = db["google_shopping_products"]
+# wishlist_collection = db["wishlist"]
+
+
+
+# # ---------------- MODELS ----------------
+# class SearchRequest(BaseModel):
+#     query: str
+#     language: str = "en"
+#     country: str = "in"
+
+# # ---------------- API ----------------
+# @app.post("/search")
+# def search_products(payload: SearchRequest):
+#     query = payload.query.strip()
+
+#     if not query:
+#         raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+#     products = scrape_google_shopping(
+#         query=query,
+#         country=payload.country,
+#         language=payload.language
+#     )
+
+#     if not products:
+#         return {"results": []}
+
+#     for item in products:
+#         item["search_query"] = query
+#         item["created_at"] = datetime.utcnow()
+
+#     collection.insert_many(products)
+
+#     # ✅ REMOVE ObjectId
+#     for item in products:
+#         item.pop("_id", None)
+
+#     return {
+#         "query": query,
+#         "total_results": len(products),
+#         "results": products
+#     }
+
+# @app.post("/wishlist/add")
+# def add_to_wishlist(product: dict = Body(...)):
+#     if not product.get("id"):
+#         raise HTTPException(status_code=400, detail="Invalid product")
+
+#     wishlist_collection.update_one(
+#         {"id": product["id"]},
+#         {
+#             "$set": {
+#                 "id": product["id"],
+#                 "name": product.get("name"),
+#                 "price": product.get("price"),
+#                 "imageUrl": product.get("imageUrl"),
+#                 "badge": product.get("badge", "Store"),
+#                 "productUrl": product.get("productUrl") or product.get("link") or "#",
+#             }
+#         },
+#         upsert=True
+#     )
+
+#     return {"status": "added"}
+
+
+# @app.get("/wishlist")
+# def get_wishlist():
+#     items = list(wishlist_collection.find())
+#     for item in items:
+#         item.pop("_id", None)
+#     return {"products": items}
+
+
+# @app.delete("/wishlist/remove/{product_id}")
+# def remove_from_wishlist(product_id: str):
+#     result = wishlist_collection.delete_one({"id": product_id})
+#     if result.deleted_count == 0:
+#         raise HTTPException(status_code=404, detail="Product not found in wishlist")
+#     return {"status": "removed"}
+
+
+# @app.get("/reels")
+# def reels_api():
+#     return get_product_reels()
+# # ---------------- RUN ----------------
+# if __name__ == "__main__":
+#     import uvicorn
+#     print("🚀 Server running at http://localhost:8000/docs")
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+
+
 import os
-import time
+import re
+import statistics
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Body
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from pymongo import MongoClient
 from dotenv import load_dotenv
-from bson import ObjectId
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi import Body
-
 
 from reels_api import get_product_reels
-
 from serpapi_shopping import scrape_google_shopping
 
 load_dotenv()
 
 # ---------------- APP ----------------
-app = FastAPI(title="Google Shopping Aggregator")
+app = FastAPI(title="Smart Product Aggregator")
 
 app.add_middleware(
     CORSMiddleware,
@@ -260,13 +384,104 @@ db = client["comparitor_db"]
 collection = db["google_shopping_products"]
 wishlist_collection = db["wishlist"]
 
-
-
 # ---------------- MODELS ----------------
 class SearchRequest(BaseModel):
     query: str
     language: str = "en"
     country: str = "in"
+
+# ---------------- HELPERS ----------------
+
+def normalize(text: str) -> str:
+    return re.sub(r'[^a-z0-9 ]', '', text.lower())
+
+def extract_price(price):
+    if not price:
+        return None
+    try:
+        return float(str(price).replace("₹", "").replace(",", "").strip())
+    except:
+        return None
+
+# 🔥 SMART PRICE RANGE (TRIMMED)
+def get_dynamic_price_range(products):
+    prices = sorted([
+        extract_price(p.get("price"))
+        for p in products
+        if extract_price(p.get("price")) is not None
+    ])
+
+    if len(prices) < 5:
+        return (0, float("inf"))
+
+    # ❗ remove lowest 30% junk prices
+    cut = int(len(prices) * 0.3)
+    prices = prices[cut:]
+
+    median_price = statistics.median(prices)
+
+    lower = median_price * 0.5
+    upper = median_price * 2.0
+
+    return (lower, upper)
+
+# 🔥 STRICT PRODUCT VALIDATION
+def is_valid_product(item, query, price_range):
+    title = normalize(item.get("title") or "")
+    query = normalize(query)
+
+    query_words = query.split()
+
+    # must match query words
+    if not all(word in title for word in query_words if len(word) > 2):
+        return False
+
+    # ❌ remove misleading items
+    if " for " in title or " compatible" in title:
+        return False
+
+    price = extract_price(item.get("price"))
+    if price is None:
+        return False
+
+    min_price, max_price = price_range
+
+    if not (min_price <= price <= max_price):
+        return False
+
+    return True
+
+# 🔥 REMOVE DUPLICATES
+def remove_duplicates(products):
+    seen = set()
+    unique = []
+
+    for item in products:
+        title = normalize(item.get("title", ""))
+        if title not in seen:
+            seen.add(title)
+            unique.append(item)
+
+    return unique
+
+# 🔥 RANKING SYSTEM
+def calculate_score(item, query):
+    title = normalize(item.get("title") or "")
+    price = extract_price(item.get("price")) or 0
+    rating = float(item.get("rating") or 0)
+
+    score = 0
+
+    if query in title:
+        score += 50
+
+    score += max(0, 20 - len(title.split()))
+    score += rating * 10
+
+    if price > 0:
+        score += max(0, 10000 / (price + 1))
+
+    return score
 
 # ---------------- API ----------------
 @app.post("/search")
@@ -276,31 +491,60 @@ def search_products(payload: SearchRequest):
     if not query:
         raise HTTPException(status_code=400, detail="Query cannot be empty")
 
-    products = scrape_google_shopping(
+    raw_products = scrape_google_shopping(
         query=query,
         country=payload.country,
         language=payload.language
     )
 
-    if not products:
+    if not raw_products:
         return {"results": []}
 
+    # 🔥 STEP 1: smart price range
+    price_range = get_dynamic_price_range(raw_products)
+
+    # 🔥 STEP 2: filter
+    products = [
+        p for p in raw_products
+        if is_valid_product(p, query, price_range)
+    ]
+
+    # 🔥 STEP 3: safety filter (removes extreme junk)
+    products = [
+        p for p in products
+        if extract_price(p.get("price")) and extract_price(p.get("price")) > 500
+    ]
+
+    # 🔥 STEP 4: remove duplicates
+    products = remove_duplicates(products)
+
+    # 🔥 STEP 5: ranking
+    products.sort(
+        key=lambda x: calculate_score(x, normalize(query)),
+        reverse=True
+    )
+
+    # fallback
+    if not products:
+        products = raw_products[:10]
+
+    # enrich + store
     for item in products:
         item["search_query"] = query
         item["created_at"] = datetime.utcnow()
 
     collection.insert_many(products)
 
-    # ✅ REMOVE ObjectId
     for item in products:
         item.pop("_id", None)
 
     return {
         "query": query,
         "total_results": len(products),
-        "results": products
+        "results": products[:20]
     }
 
+# ---------------- WISHLIST ----------------
 @app.post("/wishlist/add")
 def add_to_wishlist(product: dict = Body(...)):
     if not product.get("id"):
@@ -323,14 +567,12 @@ def add_to_wishlist(product: dict = Body(...)):
 
     return {"status": "added"}
 
-
 @app.get("/wishlist")
 def get_wishlist():
     items = list(wishlist_collection.find())
     for item in items:
         item.pop("_id", None)
     return {"products": items}
-
 
 @app.delete("/wishlist/remove/{product_id}")
 def remove_from_wishlist(product_id: str):
@@ -339,10 +581,11 @@ def remove_from_wishlist(product_id: str):
         raise HTTPException(status_code=404, detail="Product not found in wishlist")
     return {"status": "removed"}
 
-
+# ---------------- REELS ----------------
 @app.get("/reels")
 def reels_api():
     return get_product_reels()
+
 # ---------------- RUN ----------------
 if __name__ == "__main__":
     import uvicorn

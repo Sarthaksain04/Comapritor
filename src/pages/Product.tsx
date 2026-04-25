@@ -648,7 +648,7 @@ useEffect(() => {
       
     }}
   >
-    <button
+    {/* <button
       onClick={() => navigate("/threeD")}
       style={{
         position: "fixed",
@@ -667,7 +667,7 @@ useEffect(() => {
       }}
 >
         3D Product View
-      </button>
+      </button> */}
 
 
     {loading ? (

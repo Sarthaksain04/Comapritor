@@ -7,7 +7,7 @@
   align-items: center;
   gap: 60px;
   overflow: hidden;
-  background: #78b4ff;
+  background: #335e99;
 }
 
 /* Medium-sized card container */
@@ -32,7 +32,7 @@
  pointer-events: none !important;
   width: 120%; /* 🔥 make canvas bigger */
   height: 100%;
-  transform: translateX(-450px) scale(1.18); /* ✅ SAVE YOUR FINAL VALUE HERE */
+  transform: translateX(-450px) scale(0.6); /* ✅ SAVE YOUR FINAL VALUE HERE */
 
 }
 

@@ -33,6 +33,8 @@ import ContactHeadquarter from "./pages/ContactHeadquarter";
 import Feedback from "./pages/Feedback";
 import Sarthak from "./pages/Sarthak";
 import Harshita from "./pages/Harshita";
+import ShoppingShorts from "./pages/ShoppingShorts";
+
 
 function App() {
     const [isLoading, setIsLoading] = useState(true);
@@ -70,6 +72,7 @@ function App() {
       <Route path="/contactheadquarter" element={<ContactHeadquarter />} />
       <Route path="/feedback" element={<Feedback />} />
       <Route path="/harshita" element={<Harshita />} />
+      <Route path="/shoppingshorts" element={<ShoppingShorts />} />
     </Routes>
       )}
     </>

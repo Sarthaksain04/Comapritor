@@ -859,6 +859,10 @@
 // export default Explorepage;
 
 
+
+
+
+
 import { Button1 } from "@/components/rainbow-borders-button";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -1092,6 +1096,80 @@ async function handleAddToCart(product: ProductCardData) {
 
   /* ================= BACKEND SEARCH ================= */
 
+  // 🔥 CLEAN TEXT
+function normalize(text: string) {
+  return text.toLowerCase().replace(/[^a-z0-9 ]/g, "");
+}
+
+// 🔥 EXTRACT PRICE
+function extractPrice(price: any): number | null {
+  if (!price) return null;
+  const num = parseFloat(
+    price.toString().replace(/[₹,]/g, "").trim()
+  );
+  return isNaN(num) ? null : num;
+}
+
+// 🔥 GET MEDIAN
+function getMedian(arr: number[]) {
+  const sorted = [...arr].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2
+    ? sorted[mid]
+    : (sorted[mid - 1] + sorted[mid]) / 2;
+}
+
+// 🔥 MAIN CLEANING FUNCTION
+function cleanProducts(results: any[], query: string) {
+  const normQuery = normalize(query);
+
+  // STEP 1: extract valid prices
+  const prices = results
+    .map((p) => extractPrice(p.price))
+    .filter((p): p is number => p !== null);
+
+  if (prices.length === 0) return [];
+
+  // STEP 2: remove lowest 30% (junk)
+  const sorted = [...prices].sort((a, b) => a - b);
+  const cut = Math.floor(sorted.length * 0.3);
+  const trimmed = sorted.slice(cut);
+
+  const median = getMedian(trimmed);
+
+  const minPrice = median * 0.5;
+  const maxPrice = median * 2.0;
+
+  // STEP 3: filter
+  const filtered = results.filter((item) => {
+    const title = normalize(item.title || "");
+    const price = extractPrice(item.price);
+
+    if (!price) return false;
+
+    // 🔥 price check
+    if (price < minPrice || price > maxPrice) return false;
+
+    // 🔥 query relevance
+    const queryWords = normQuery.split(" ").filter((w) => w.length > 2);
+    if (!queryWords.every((w) => title.includes(w))) return false;
+
+    // 🔥 remove misleading products
+    if (title.includes(" for ") || title.includes("compatible")) return false;
+
+    return true;
+  });
+
+  // STEP 4: remove duplicates
+  const seen = new Set();
+  return filtered.filter((item) => {
+    const key = normalize(item.title || "");
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+}
+
   async function fetchProducts() {
     if (!query.trim()) return;
 
@@ -1110,7 +1188,10 @@ async function handleAddToCart(product: ProductCardData) {
 
       const data = await res.json();
       // const results = data.cleaned_products || [];
-      const results = data.results || [];
+      const rawResults = data.results || [];
+
+// 🔥 CLEAN HERE
+      const results = cleanProducts(rawResults, query);
 
 
       localStorage.setItem("searchResults", JSON.stringify(results));

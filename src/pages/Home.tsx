@@ -514,7 +514,15 @@ import Lenis from "@studio-freight/lenis";
 import Reels from "../assets/Reels.png";
 import ContactPage from "./ContactPage";
 import confetti from "canvas-confetti";
-
+import Dog from "@/assets/Dog.jpg"
+import Speaker from "@/assets/Speaker.png"
+import stationary from "@/assets/stationary.jpeg"
+import Shoe from "@/assets/Shoe.jpeg"
+import hair from "@/assets/hair.png"
+import phone from "@/assets/phone.webp"
+import face from "@/assets/face.jpeg"
+import Sign from "@/assets/Sign.png"
+import Feedback from "@/assets/Feedback.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -544,14 +552,14 @@ const Home = () => {
   };
 }, []);
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    const loggedIn = localStorage.getItem("isLoggedIn") === "true";
-    setIsLoggedIn(loggedIn);
-  }, 500);
+// useEffect(() => {
+//   const interval = setInterval(() => {
+//     const loggedIn = localStorage.getItem("isLoggedIn") === "true";
+//     setIsLoggedIn(loggedIn);
+//   }, 500);
 
-  return () => clearInterval(interval);
-}, []);
+//   return () => clearInterval(interval);
+// }, []);
 
   useEffect(() => {
   const lenis = new Lenis({
@@ -689,14 +697,26 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
         <Joyride
           steps={steps}
           run={!isLoggedIn}
-          continuous
-          showProgress
-          disableCloseOnEsc
-          disableOverlayClose
+          continuous={false}
+          showProgress={false}
+          showSkipButton={false}
+          disableCloseOnEsc={true}
+          disableOverlayClose={true}
           spotlightClicks
-          hideBackButton
-          styles={{ options: { zIndex: 10000 } }}
+           hideCloseButton={true}      // 🔥 removes ❌ button
+           hideBackButton={true}
+          styles={{ 
+            options: { 
+              zIndex: 10000 ,
+            },
+
+            buttonNext: {
+              display: "none", // 🔥 removes red "Close" button
+            },
+          
+          }}
         />
+
       )}
           
       <section className="home-hero-section">
@@ -874,17 +894,117 @@ const path = document.querySelector<SVGPathElement>("#animated-path");
         </div>
 
         {/* RIGHT CLUSTER (10 divs: 2 big + 8 small) */}
-        <div className="big-card right-big-1">        </div>
-        <div className="big-card right-big-2"></div>
+        <div className="big-card right-big-1">
+          <img
+            src={Sign}
+            alt="Promotional"
+             style={{
+             borderRadius: "12px"
+            }}   
+            />
+        </div>
+        <div className="big-card right-big-2">
+           <img
+            src={Feedback}
+            alt="Promotional"
+             style={{
+             borderRadius: "12px"
+            }}
+            
+            />
+        </div>
 
-        <div className="sq right-sq-1"></div>
-        <div className="sq right-sq-2"></div>
-        <div className="sq right-sq-3"></div>
-        <div className="sq right-sq-4"></div>
-        <div className="sq right-sq-5"></div>
-        <div className="sq right-sq-6"></div>
-        <div className="sq right-sq-7"></div>
-        <div className="sq right-sq-8"></div>
+        <div className="sq right-sq-1">
+          <img
+          
+          src={Dog}
+          alt="Promotional"
+          style={{
+            width: "70%",
+            height: "auto",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 2,
+          }}
+          
+          />
+        </div>
+        <div className="sq right-sq-2">
+          <img
+          src={Speaker}
+          alt="Promotional"
+          />
+        </div>
+        <div className="sq right-sq-3">
+          <img
+          
+          src={stationary}
+          alt="Promotional"
+          style={{
+            width: "70%",
+            height: "auto",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 2,
+          }}
+          
+          />
+        </div>
+        <div className="sq right-sq-4">
+            <img
+            src={Shoe}
+            alt="Promotional"
+            style={{
+              top: "370px",
+              right: "150px",
+              borderRadius: "12px"
+            }}
+            />
+        </div>
+        <div className="sq right-sq-5">
+          <img
+            src={hair}
+            alt="Promotional"
+            
+             style={{
+             borderRadius: "12px"
+            }}
+            
+            />
+        </div>
+
+
+
+        <div className="sq right-sq-6">
+            <img
+            src={face}
+            alt="Promotional"
+            
+             style={{
+             borderRadius: "12px"
+            }}
+            
+            />
+        </div>
+
+        <div className="sq right-sq-7">
+          
+        </div>
+        <div className="sq right-sq-8">
+            <img
+            src={phone}
+            alt="Promotional"
+            
+             style={{
+             borderRadius: "12px"
+            }}
+            
+            />
+        </div>
 
                
 

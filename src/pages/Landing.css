@@ -113,6 +113,9 @@
   right: 26px;  
   animation-duration: 5.6s; 
   animation-delay: 0.18s; 
+    background: #fff;
+
+
 }
 .right-sq-2 { 
   top: 230px; 
@@ -122,6 +125,7 @@
   width:64px; 
   height:64px; 
   border-radius:18px; 
+  background: #10243d;
 }
 
 .right-sq-3 { 
@@ -132,7 +136,7 @@
   animation-duration: 5.8s; 
   animation-delay: 0.42s;   
   border-radius: 12px;
-  background: #10243d;
+  background: #ffffff;
 }
 
 
@@ -142,6 +146,8 @@
   animation-duration: 7.0s; 
   animation-delay: 1.25s;   
   border-radius: 12px;
+    background: #efda7f;
+
 
 }
 
@@ -153,6 +159,8 @@
   width: 64px;
   height: 64px;
   border-radius: 12px;
+  background: #ebe5ef;
+
 
 }
 .right-sq-6 { 
@@ -163,6 +171,7 @@
   width: 64px;
   height: 64px;
   border-radius: 12px;
+  background: #f1e2ef;
 
 }
 
@@ -174,6 +183,7 @@
   width: 49px;
   height: 49px;
   border-radius: 12px;
+  
 
 }
 

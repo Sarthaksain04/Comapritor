@@ -442,11 +442,22 @@ const handleVerifyOtp = async () => {
  setSuccess(true);
   toast.success("Signup successful 🎉");
 
+  // setTimeout(() => {
+  //   setShowOtpModal(false);
+  //   localStorage.setItem("justSignedUp", "true");
+  //   navigate("/");
+  // }, 2000);
+
+
   setTimeout(() => {
-    setShowOtpModal(false);
-    localStorage.setItem("justSignedUp", "true");
-    navigate("/");
-  }, 2000);
+  setShowOtpModal(false);
+
+  // 🔥 SWITCH TO LOGIN MODE
+  setIsSignup(false);
+
+  localStorage.setItem("justSignedUp", "true");
+}, 2000);
+  
 
   return true;
 };

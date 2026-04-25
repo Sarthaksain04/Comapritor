@@ -219,6 +219,26 @@ router.post("/login", async (req, res) => {
 });
 
 
+// ✅ Check Auth
+router.get("/check-auth", async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) return res.status(401).json({ loggedIn: false });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const user = await User.findById(decoded.id);
+
+    if (!user || user.sessionId !== decoded.sessionId) {
+      return res.status(401).json({ loggedIn: false });
+    }
+
+    res.json({ loggedIn: true });
+  } catch {
+    res.status(401).json({ loggedIn: false });
+  }
+});
 
 
 // ✅ Forgot Password
